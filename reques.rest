@@ -1,0 +1,6 @@
+POST localhost:3000/api/persons/
+  {
+    "name": "unique2",
+  "number": "dssd"
+  }
+  
