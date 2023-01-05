@@ -40,9 +40,7 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
-  const isNumberRepeated = persons.find(
-    (person) => person.number == body.number
-  )
+  // const isNumberRepeated = person.find((person) => person.number == body.number)
 
   if (!body.name) {
     return res.status(404).json({
@@ -52,11 +50,12 @@ app.post('/api/persons', (req, res) => {
     return res.status(404).json({
       error: 'phone number missed',
     })
-  } else if (isNumberRepeated) {
-    return res.status(403).json({
-      error: 'number must be unique',
-    })
   }
+  // else if (isNumberRepeated) {
+  //   return res.status(403).json({
+  //     error: 'number must be unique',
+  //   })
+  // }
 
   const person = new Person({
     name: body.name,
