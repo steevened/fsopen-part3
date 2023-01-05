@@ -102,3 +102,5 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)
 })
+
+// mongodb+srv://steevened:<password>@cluster0.behi3du.mongodb.net/?retryWrites=true&w=majority
