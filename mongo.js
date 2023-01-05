@@ -38,7 +38,6 @@ mongoose.connect(url).then((res) => {
 
   return person.save().then((res) => {
     console.log(`Added ${person.name} number ${person.number} to phonebook`)
-    console.log(process.argv.length)
     mongoose.connection.close()
   })
 })

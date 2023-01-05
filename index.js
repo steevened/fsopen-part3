@@ -1,5 +1,7 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
+const Person = require('./models/Persons')
 
 const cors = require('cors')
 app.use(cors())
@@ -42,7 +44,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person.find({}).then((person) => {
+    res.json(person)
+  })
 })
 
 app.get('/api/info', (req, res) => {
@@ -98,7 +102,7 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)
 })
