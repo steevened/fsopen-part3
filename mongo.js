@@ -20,7 +20,7 @@ const personShema = new mongoose.Schema({
 
 const Person = mongoose.model('Person', personShema)
 
-mongoose.connect(url).then((res) => {
+mongoose.connect(url).then(() => {
   console.log('connected')
 
   const person = new Person({
@@ -36,7 +36,7 @@ mongoose.connect(url).then((res) => {
     })
   }
 
-  return person.save().then((res) => {
+  return person.save().then(() => {
     console.log(`Added ${person.name} number ${person.number} to phonebook`)
     mongoose.connection.close()
   })

@@ -11,12 +11,6 @@ app.use(express.json())
 //variables
 const date = new Date()
 
-const newId = () => {
-  const ids = persons.map((person) => person.id)
-  const maxId = persons.length > 0 ? Math.max(...ids) : 0
-  return maxId + 1
-}
-
 //routes
 
 app.get('/', (req, res) => {
@@ -24,9 +18,11 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/info', (req, res) => {
-  res.send(
-    `<p>Phonebook has info for ${persons.length} people</p> <p>${date}</p> `
-  )
+  Person.find({}).then((person) => {
+    res.send(
+      `<p>Phonebook has info for ${person.length} people</p> <p>${date}</p> `
+    )
+  })
 })
 
 //persons routes
@@ -50,33 +46,19 @@ app.get('/api/persons/:id', (req, res, next) => {
     .catch((error) => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
-  // const isNumberRepeated = person.find((person) => person.number == body.number)
-
-  if (!body.name) {
-    return res.status(404).json({
-      error: 'name missing',
-    })
-  } else if (!body.number) {
-    return res.status(404).json({
-      error: 'phone number missed',
-    })
-  }
-  // else if (isNumberRepeated) {
-  //   return res.status(403).json({
-  //     error: 'number must be unique',
-  //   })
-  // }
-
   const person = new Person({
     name: body.name,
     number: body.number,
   })
 
-  person.save().then((savedPerson) => {
-    res.json(savedPerson)
-  })
+  person
+    .save()
+    .then((savedPerson) => {
+      res.json(savedPerson)
+    })
+    .catch((error) => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -87,7 +69,11 @@ app.put('/api/persons/:id', (req, res, next) => {
     number: body.number,
   }
 
-  Person.findByIdAndUpdate(id, person, { new: true })
+  Person.findByIdAndUpdate(id, person, {
+    new: true,
+    runValidators: true,
+    context: 'query',
+  })
     .then((updatedPerson) => {
       res.status(200).json(updatedPerson)
     })
@@ -97,7 +83,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   Person.findByIdAndRemove(id)
-    .then((result) => {
+    .then(() => {
       res.status(204).end()
     })
     .catch((error) => next(error))
